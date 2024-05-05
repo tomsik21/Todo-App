@@ -11,6 +11,7 @@ import todoapp.domain.Todo;
 import todoapp.repository.TodoRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @DataJpaTest
 @AutoConfigureTestDatabase(connection = EmbeddedDatabaseConnection.H2)
@@ -43,7 +44,7 @@ public class TodoRepositoryTests {
                 .todoItem("Learn")
                 .completed("No").build();
         Todo todo2 = Todo.builder()
-                .todoItem("Learn")
+                .todoItem("Exercise")
                 .completed("No").build();
 
         //Act
@@ -54,5 +55,81 @@ public class TodoRepositoryTests {
         List<Todo> todoList = todoRepository.findAll();
         Assertions.assertThat(todoList).isNotNull();
         Assertions.assertThat(todoList.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void TodoRepository_FindById_ReturnTodo() {
+
+        //Arrange
+        Todo todo = Todo.builder()
+                .todoItem("Learn")
+                .completed("No").build();
+
+        //Act
+        todoRepository.save(todo);
+
+        //Assert
+        Todo todoList = todoRepository.findById(todo.getId()).get(0);
+
+        Assertions.assertThat(todoList).isNotNull();
+    }
+
+    @Test
+    public void TodoRepository_FindByType_ReturnTodoNotNull() {
+
+        //Arrange
+        Todo todo = Todo.builder()
+                .todoItem("Learn")
+                .completed("No").build();
+
+        //Act
+        todoRepository.save(todo);
+
+        //Assert
+        Todo todoList = todoRepository.findByCompleted(todo.getCompleted()).get();
+
+        Assertions.assertThat(todoList).isNotNull();
+    }
+
+    @Test
+    public void TodoRepository_UpdateTodo_ReturnTodoNotNull() {
+
+        //Arrange
+        Todo todo = Todo.builder()
+                .todoItem("Learn")
+                .completed("No").build();
+
+        //Act
+        todoRepository.save(todo);
+
+        //Assert
+        Todo todoSave = todoRepository.findById(todo.getId()).get(0);
+        todoSave.setCompleted("No");
+        todoSave.setTodoItem("Organize");
+
+        Todo updatedTodo = todoRepository.save(todoSave);
+
+        Assertions.assertThat(updatedTodo.getTodoItem()).isNotNull();
+        Assertions.assertThat(updatedTodo.getCompleted()).isNotNull();
+
+    }
+
+    @Test
+    public void TodoRepository_TodoDelete_ReturnTodoIsEmpty() {
+
+        //Arrange
+        Todo todo = Todo.builder()
+                .todoItem("Learn")
+                .completed("No").build();
+
+        //Act
+        todoRepository.save(todo);
+
+        todoRepository.deleteById(todo.getId());
+        Optional<Todo> todoReturn = todoRepository.findByCompleted(todo.getCompleted());
+
+        //Assert
+
+        Assertions.assertThat(todoReturn).isEmpty();
     }
 }

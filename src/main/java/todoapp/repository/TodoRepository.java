@@ -5,10 +5,12 @@ import org.springframework.stereotype.Repository;
 import todoapp.domain.Todo;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface TodoRepository extends PagingAndSortingRepository<Todo,
         Long> {
+    Optional<Todo> findByCompleted(String completed);
 
     Todo save(Todo todo);
 
