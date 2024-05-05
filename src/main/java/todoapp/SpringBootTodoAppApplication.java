@@ -11,7 +11,8 @@ import todoapp.domain.Todo;
 import todoapp.repository.TodoRepository;
 
 @SpringBootApplication
-public class SpringBootTodoAppApplication implements CommandLineRunner {
+//public class SpringBootTodoAppApplication implements CommandLineRunner {
+public class SpringBootTodoAppApplication {
     @Autowired
     public TodoRepository todoRepository;
 
@@ -19,16 +20,16 @@ public class SpringBootTodoAppApplication implements CommandLineRunner {
         SpringApplication.run(SpringBootTodoAppApplication.class, args);
     }
 
-    @Override
-    public void run(String... args) throws Exception {
-        Todo test = Todo.builder().id(10).completed("its completed").todoItem("python ML").build();
-        System.out.println(test.toString());
-        List<Todo> todos = Arrays.asList(
-                new Todo("Learn Spring", "Yes"),
-                new Todo("Learn Driving", "No"),
-                new Todo("Go for a Walk", "No"),
-                new Todo("Cook Dinner", "Yes")
-        );
-        todos.forEach(todoRepository::save);
-    }
+//    @Override
+//    public void run(String... args) throws Exception {
+//        Todo test = Todo.builder().id(10).completed("its completed").todoItem("python ML").build();
+//        System.out.println(test.toString());
+//        List<Todo> todos = Arrays.asList(
+//                new Todo("Learn Spring", "Yes"),
+//                new Todo("Learn Driving", "No"),
+//                new Todo("Go for a Walk", "No"),
+//                new Todo("Cook Dinner", "Yes")
+//        );
+//        todos.forEach(todoRepository::save);
+//    }
 }

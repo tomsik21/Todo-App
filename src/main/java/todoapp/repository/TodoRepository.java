@@ -8,13 +8,13 @@ import java.util.List;
 
 @Repository
 public interface TodoRepository extends PagingAndSortingRepository<Todo,
-        Long>{
+        Long> {
 
     Todo save(Todo todo);
 
     void deleteById(long id);
 
-    List<Object> findById(long id);
+    List<Todo> findById(long id);
 
-    Object findAll();
+    List<Todo> findAll();
 }
