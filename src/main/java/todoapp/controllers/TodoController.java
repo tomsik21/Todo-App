@@ -1,20 +1,27 @@
 package todoapp.controllers;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import todoapp.domain.Todo;
+import org.springframework.web.bind.annotation.*;
+import todoapp.dto.TodoDto;
+import todoapp.dto.TodoResponse;
 import todoapp.repository.TodoRepository;
+
+import todoapp.service.TodoService;
 
 
 @Controller
 public class TodoController {
+
+    private final TodoService todoService;
+
     @Autowired
-    TodoRepository todoRepository;
+    public TodoController(TodoService todoService) {
+        this.todoService = todoService;
+    }
 
     @GetMapping
     public String index() {
@@ -22,43 +29,25 @@ public class TodoController {
     }
 
     @GetMapping("/todos")
-    public String todos(Model model) {
-        model.addAttribute("todos", todoRepository.findAll());
-        return "todos";
+    public ResponseEntity<TodoResponse> todos(Model model) {
+        return new ResponseEntity<>(todoService.getAllTodo(), HttpStatus.OK);
     }
 
     @PostMapping("/todoNew")
-    public String add(@RequestParam String todoItem, @RequestParam
-    String status, Model model) {
-        Todo todo = new Todo(todoItem, status);
-        todo.setTodoItem(todoItem);
-        todo.setCompleted(status);
-        todoRepository.save(todo);
-        model.addAttribute("todos", todoRepository.findAll());
-        return "redirect:/todos";
+    public ResponseEntity<TodoDto> add(@RequestBody TodoDto todoDto) {
+        todoService.add(todoDto);
+        return new ResponseEntity<>(todoDto, HttpStatus.CREATED);
     }
 
     @PostMapping("/todoDelete/{id}")
-    public String delete(@PathVariable long id, Model model) {
-        todoRepository.deleteById(id);
-        model.addAttribute("todos", todoRepository.findAll());
-        return "redirect:/todos";
+    public ResponseEntity<TodoResponse> delete(@PathVariable long id) {
+        todoService.deleteTodoId(id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PostMapping("/todoUpdate/{id}")
-    public String update(@PathVariable long id, Model model) {
-        //TODO: should check if the id is return only 1 unique item
-        Todo todo = (Todo) todoRepository.findById(id).get(0);
-        if("Yes".equals(todo.getCompleted())) {
-            todo.setCompleted("No");
-        }
-        else {
-            todo.setCompleted("Yes");
-        }
-        todoRepository.save(todo);
-        model.addAttribute("todos", todoRepository.findAll());
-        return "redirect:/todos";
+    public ResponseEntity<TodoResponse> update(@PathVariable long id, TodoDto todoDto) {
+        todoService.updateTodo(todoDto, id);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
-
-
 }
