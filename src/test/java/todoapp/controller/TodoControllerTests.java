@@ -10,7 +10,6 @@ import static org.mockito.BDDMockito.given;
 
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.security.oauth2.client.OAuth2ClientProperties;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -38,8 +37,6 @@ public class TodoControllerTests {
     @Autowired
     private ObjectMapper objectMapper;
     private TodoDto todoDto;
-    @Autowired
-    private OAuth2ClientProperties oAuth2ClientProperties;
 
     @BeforeEach
     public void init() {
