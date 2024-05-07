@@ -104,9 +104,9 @@ public class TodoControllerTests {
     @Test
     public void TodoController_UpdateTodo_ReturnTodoDto() throws Exception {
 
-        when(todoService.updateTodo(todoDtoList.get(0), todoDtoList.get(0).getId())).thenReturn(todoDtoList.get(0));
+        when(todoService.updateTodo(todoDtoList.get(0))).thenReturn(todoDtoList.get(0));
 
-        ResultActions response = mockMvc.perform(put("/todoUpdate/1")
+        ResultActions response = mockMvc.perform(put("/todoUpdate")
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(todoDtoList.get(0))));
 

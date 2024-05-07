@@ -59,18 +59,24 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public TodoDto updateTodo(TodoDto TodoDto, long id) {
-        List<Todo> todos = todoRepository.findById(id);
+    public TodoDto updateTodo(TodoDto todoDto) {
+        List<Todo> todos = todoRepository.findById(todoDto.getId());
         if (todos.isEmpty()) {
             throw new TodoNotFoundException("Could not update Todo");
         }
+
         Todo todo = todos.get(0);
 
-        todo.setTodoItem(TodoDto.getTodoItem());
-        todo.setCompleted(TodoDto.getCompleted());
+        todo.setTodoItem(todoDto.getTodoItem());
+        todo.setCompleted(todoDto.getCompleted());
 
         Todo updatedTodo = todoRepository.save(todo);
-        return mapToDto(updatedTodo);
+        TodoDto todoResponse = new TodoDto();
+        todoResponse.setId(updatedTodo.getId());
+        todoResponse.setTodoItem(updatedTodo.getTodoItem());
+        todoResponse.setCompleted(updatedTodo.getCompleted());
+
+        return todoResponse;
     }
 
     @Override
