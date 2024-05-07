@@ -17,22 +17,18 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import todoapp.controllers.TodoController;
 import todoapp.dto.TodoDto;
 import todoapp.dto.TodoResponse;
-import todoapp.model.Todo;
 import todoapp.service.TodoService;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 
 
 @WebMvcTest(controllers = TodoController.class)
@@ -88,6 +84,47 @@ public class TodoControllerTests {
 
         response.andExpect(MockMvcResultMatchers.status().isOk())
                 .andExpect(MockMvcResultMatchers.jsonPath("$.content.size()", CoreMatchers.is(responseDto.getContent().size())));
+
+    }
+
+    @Test
+    public void TodoController_TodoDetail_ReturnTodoDto() throws Exception {
+        when(todoService.getTodoById(1)).thenReturn(todoDtoList.get(1));
+
+        ResultActions response = mockMvc.perform(get("/todo/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(todoDtoList.get(0))));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.todoItem", CoreMatchers.is(todoDtoList.get(1).getTodoItem())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.completed", CoreMatchers.is(todoDtoList.get(1).getCompleted())));
+
+    }
+
+    @Test
+    public void TodoController_UpdateTodo_ReturnTodoDto() throws Exception {
+
+        when(todoService.updateTodo(todoDtoList.get(0), todoDtoList.get(0).getId())).thenReturn(todoDtoList.get(0));
+
+        ResultActions response = mockMvc.perform(put("/todoUpdate/1")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(todoDtoList.get(0))));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk())
+                .andExpect(MockMvcResultMatchers.jsonPath("$.todoItem", CoreMatchers.is(todoDtoList.get(0).getTodoItem())))
+                .andExpect(MockMvcResultMatchers.jsonPath("$.completed", CoreMatchers.is(todoDtoList.get(0).getCompleted())));
+
+   }
+
+    @Test
+    public void TodoController_DeleteTodo_ReturnString() throws Exception {
+        doNothing().when(todoService).deleteTodoId(0);
+
+        ResultActions response = mockMvc.perform(delete("/todoDelete/0")
+                .contentType(MediaType.APPLICATION_JSON));
+
+        response.andExpect(MockMvcResultMatchers.status().isOk());
+
 
     }
 }

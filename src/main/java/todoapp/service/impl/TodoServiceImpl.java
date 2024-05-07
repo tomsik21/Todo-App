@@ -59,7 +59,7 @@ public class TodoServiceImpl implements TodoService {
     }
 
     @Override
-    public void updateTodo(TodoDto TodoDto, long id) {
+    public TodoDto updateTodo(TodoDto TodoDto, long id) {
         List<Todo> todos = todoRepository.findById(id);
         if (todos.isEmpty()) {
             throw new TodoNotFoundException("Could not update Todo");
@@ -70,7 +70,7 @@ public class TodoServiceImpl implements TodoService {
         todo.setCompleted(TodoDto.getCompleted());
 
         Todo updatedTodo = todoRepository.save(todo);
-        mapToDto(updatedTodo);
+        return mapToDto(updatedTodo);
     }
 
     @Override

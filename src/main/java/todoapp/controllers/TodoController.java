@@ -4,12 +4,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import todoapp.dto.TodoDto;
 import todoapp.dto.TodoResponse;
-import todoapp.repository.TodoRepository;
-
 import todoapp.service.TodoService;
 
 
@@ -32,6 +29,11 @@ public class TodoController {
     public ResponseEntity<TodoResponse> todos() {
         return new ResponseEntity<>(todoService.getAllTodo(), HttpStatus.OK);
     }
+    @GetMapping("todo/{id}")
+    public ResponseEntity<TodoDto> todoDetail(@PathVariable long id) {
+        return ResponseEntity.ok(todoService.getTodoById(id));
+
+    }
 
     @PostMapping("/todoNew")
     public ResponseEntity<TodoDto> add(@RequestBody TodoDto todoDto) {
@@ -39,14 +41,14 @@ public class TodoController {
         return new ResponseEntity<>(todoDto, HttpStatus.CREATED);
     }
 
-    @PostMapping("/todoDelete/{id}")
+    @DeleteMapping("/todoDelete/{id}")
     public ResponseEntity<TodoResponse> delete(@PathVariable long id) {
         todoService.deleteTodoId(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
-    @PostMapping("/todoUpdate/{id}")
-    public ResponseEntity<TodoResponse> update(@PathVariable long id, TodoDto todoDto) {
+    @PutMapping("/todoUpdate/{id}")
+    public ResponseEntity<TodoResponse> update(@PathVariable long id, @RequestBody TodoDto todoDto) {
         todoService.updateTodo(todoDto, id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
