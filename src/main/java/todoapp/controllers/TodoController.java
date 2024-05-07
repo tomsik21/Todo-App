@@ -29,7 +29,7 @@ public class TodoController {
     }
 
     @GetMapping("/todos")
-    public ResponseEntity<TodoResponse> todos(Model model) {
+    public ResponseEntity<TodoResponse> todos() {
         return new ResponseEntity<>(todoService.getAllTodo(), HttpStatus.OK);
     }
 
